@@ -10,7 +10,6 @@ const TRACKS = [
 {
   id: "chalisa",
   title: "श्री हनुमान चालीसा",
-  artist: "Rasraj Ji Maharaj (Reverb)",
   file: "chalisa.mp3",
   times: [],
   text: `# दोहा
@@ -70,7 +69,6 @@ const TRACKS = [
 {
   id: "bajrang-baan",
   title: "श्री बजरंग बाण",
-  artist: "Rasraj Ji Maharaj (Lofi)",
   file: "bajrang-baan.mp3",
   times: [],
   text: `# दोहा
@@ -121,7 +119,6 @@ const TRACKS = [
 {
   id: "ram-bhajan",
   title: "श्री राम भजन",
-  artist: "Vickky Agarwal",
   file: "ram-bhajan.mp3",
   times: [],
   placeholder: true,
@@ -132,7 +129,6 @@ const TRACKS = [
 {
   id: "hanuman-ashtak",
   title: "संकटमोचन हनुमान अष्टक",
-  artist: "Hariharan",
   file: "hanuman-ashtak.mp3",
   times: [],
   text: `# १
@@ -190,7 +186,6 @@ const TRACKS = [
 {
   id: "hanuman-bhajan",
   title: "बजरंगबली हनुमान भजन",
-  artist: "Hanuman Bhajan 2026",
   file: "hanuman-bhajan.mp3",
   times: [],
   placeholder: true,
