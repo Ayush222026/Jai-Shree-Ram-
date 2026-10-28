@@ -108,7 +108,7 @@
 
 
   // ---------- राम नाम जप (auto-play + counter) ----------
-  const jap = new Audio('ram-bhajan.mp3');
+  const jap = new Audio('ram-naam-jap.mp3');
   jap.loop = true; jap.preload = 'auto';
   let count = 0;
   try { count = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0; } catch (e) {}
