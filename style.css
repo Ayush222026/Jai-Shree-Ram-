@@ -115,3 +115,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .pill-btn:hover{background:linear-gradient(135deg,var(--gold),var(--saffron));color:#2a0608}
 .pill-btn svg{width:16px;height:16px}
 .tap{margin-top:18px}
+
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:rgba(20,3,4,.82);backdrop-filter:blur(6px)}
+.gate[hidden]{display:none}
+.gate-btn{display:flex;flex-direction:column;gap:14px;align-items:center;padding:28px 34px;border:1px solid rgba(255,214,120,.6);border-radius:20px;background:rgba(42,6,8,.9);color:#ffd678;cursor:pointer;font-family:inherit}
+.gate-om{font-family:'Tiro Devanagari Hindi',serif;font-size:2rem}
+.gate-t{font-size:1rem;color:#fff}

@@ -141,11 +141,14 @@
   const cleanup = () => { unlocked = true; evs.forEach(ev => document.removeEventListener(ev, unlock, true)); };
   const armUnlock = () => evs.forEach(ev => document.addEventListener(ev, unlock, true));
 
+  const gate = $('#gate');
+  const hideGate = () => { gate.hidden = true; };
+  $('#gateBtn').addEventListener('click', () => { startJap().then(hideGate); hideGate(); cleanup(); });
   jap.play().then(() => { unlocked = true; }).catch(() => {
     armUnlock();
-    jap.muted = true;                     // muted autoplay aksar allowed hota hai
-    jap.play().catch(() => { jap.muted = false; });
+    gate.hidden = false;                  // browser ne sound-autoplay roka: ek tap par shuru
   });
+  jap.addEventListener('playing', () => { if (!jap.muted) hideGate(); });
 
   $('#tap').addEventListener('click', e => {
     count++; showCount(); saveCount(); cleanup();
