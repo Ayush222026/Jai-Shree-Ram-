@@ -110,3 +110,8 @@ input[type=range]{accent-color:var(--saffron)}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (max-width:480px){.vol input{width:48px}.topnav{gap:12px}.logo{font-size:1.1rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+.pill-btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 20px;background:rgba(30,4,6,.5);border:1px solid var(--gold);color:var(--gold-soft);border-radius:999px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.85rem;letter-spacing:.06em;transition:background .2s,color .2s}
+.pill-btn:hover{background:linear-gradient(135deg,var(--gold),var(--saffron));color:#2a0608}
+.pill-btn svg{width:16px;height:16px}
+.tap{margin-top:18px}

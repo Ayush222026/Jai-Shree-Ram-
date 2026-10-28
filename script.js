@@ -28,7 +28,7 @@
       '<div class="card-head">' +
         '<button class="play" aria-label="Play ' + esc(t.title) + '">' + PLAY + '</button>' +
         '<div class="meta"><h3>' + esc(t.title) + '</h3></div>' +
-        '<button class="toggle" aria-expanded="false">बोल ▾</button>' +
+        '<button class="toggle" aria-expanded="false">Start ▾</button>' +
       '</div>' +
       '<div class="trans">' +
         (t.placeholder ? '<div class="note">इस भजन के बोल जल्द जोड़े जाएँगे।</div>' : '') +
@@ -58,7 +58,7 @@
     const c = $('#card-' + TRACKS[i].id);
     c.classList.toggle('open', open);
     const tg = c.querySelector('.toggle');
-    tg.textContent = open ? 'बोल ▴' : 'बोल ▾';
+    tg.textContent = open ? 'Start ▴' : 'Start ▾';
     tg.setAttribute('aria-expanded', open);
   }
 
@@ -108,7 +108,7 @@
 
 
   // ---------- राम नाम जप (auto-play + counter) ----------
-  const jap = new Audio('ram-naam-jap.mp3');
+  const jap = new Audio('ram-bhajan.mp3');
   jap.loop = true; jap.preload = 'auto';
   let count = 0;
   try { count = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0; } catch (e) {}
@@ -116,14 +116,13 @@
   const saveCount = () => { try { localStorage.setItem('hjv_count', count); } catch (e) {} };
   showCount();
 
-  const hint = $('#japHint'), HINT = 'राम नाम गिनने के लिए टैप करें';
   const japSync = () => {
     const on = !jap.paused && !jap.muted;
-    $('#japPP').innerHTML = on ? PAUSE : PLAY;
-    $('#japPP').setAttribute('aria-label', on ? 'जप रोकें' : 'जप चलाएँ');
+    $('#japPP').innerHTML = (on ? PAUSE : PLAY) + '<span>' + (on ? 'Stop' : 'Start') + '</span>';
+    $('#japPP').setAttribute('aria-label', on ? 'Stop' : 'Start');
   };
   // sound ke saath chalao
-  const startJap = () => { jap.muted = false; return jap.play().then(() => { hint.textContent = HINT; hint.classList.remove('warn'); }).catch(() => {}); };
+  const startJap = () => { jap.muted = false; return jap.play().catch(() => {}); };
   jap.onplay = () => { if (cur >= 0 && !audio.paused) audio.pause(); japSync(); };
   jap.onpause = japSync;
   jap.onvolumechange = japSync;
@@ -142,8 +141,6 @@
   const armUnlock = () => evs.forEach(ev => document.addEventListener(ev, unlock, true));
 
   jap.play().then(() => { unlocked = true; }).catch(() => {
-    hint.textContent = 'जप के लिए स्क्रीन पर कहीं भी टैप करें';
-    hint.classList.add('warn');
     armUnlock();
     jap.muted = true;                     // muted autoplay aksar allowed hota hai
     jap.play().catch(() => { jap.muted = false; });
