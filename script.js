@@ -101,6 +101,7 @@
     }
   };
   $('#pp').onclick = () => cur < 0 ? playTrack(0) : (audio.paused ? audio.play() : audio.pause());
+  $('#stop').onclick = () => { audio.pause(); audio.currentTime = 0; };
   $('#prev').onclick = () => step(-1);
   $('#next').onclick = () => step(1);
   $('#seek').oninput = e => { if (audio.duration) audio.currentTime = e.target.value / 100 * audio.duration; };
@@ -108,7 +109,7 @@
 
 
   // ---------- राम नाम जप (auto-play + counter) ----------
-  const jap = new Audio('ram-naam-jap.mp3');
+  const jap = new Audio('shree-ram-naam.mp3');
   jap.loop = true; jap.preload = 'auto';
   let count = 0;
   try { count = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0; } catch (e) {}
@@ -152,7 +153,7 @@
     const b = e.currentTarget; b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
     if (jap.paused || jap.muted) startJap();       // tap par audio chalne lage
   });
-  $('#japPP').onclick = () => { cleanup(); (jap.paused || jap.muted) ? startJap() : jap.pause(); };
+  $('#japPP').onclick = () => { cleanup(); (jap.paused || jap.muted) ? startJap() : (jap.pause(), jap.currentTime = 0); };
   $('#japReset').onclick = () => { if (confirm('Counter 0 karein?')) { count = 0; showCount(); saveCount(); } };
   japSync();
 
