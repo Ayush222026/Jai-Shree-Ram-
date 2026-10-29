@@ -6,8 +6,6 @@
 
   const list = $('#list'), dock = $('#dock');
   const fmt = s => isFinite(s) ? Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0') : '0:00';
-  const PLAY = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-  const PAUSE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
   const esc = t => t.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
   // ---------- cards ----------
@@ -26,15 +24,15 @@
     card.id = 'card-' + t.id;
     card.innerHTML =
       '<div class="card-head">' +
-        '<button class="play" aria-label="Play ' + esc(t.title) + '">' + PLAY + '</button>' +
-        '<div class="meta"><h3>' + esc(t.title) + '</h3></div>' +
-        '<button class="toggle" aria-expanded="false">Start ▾</button>' +
+        '<button class="play" aria-label="Play ' + esc(t.title) + '">▶</button>' +
+        '<div class="meta"><h3>' + esc(t.title) + '</h3><p>' + esc(t.artist) + '</p></div>' +
+        '<button class="toggle" aria-expanded="false">बोल ▾</button>' +
       '</div>' +
       '<div class="trans">' +
         (t.placeholder ? '<div class="note">इस भजन के बोल जल्द जोड़े जाएँगे।</div>' : '') +
         '<div class="tools">' +
           '<button data-a="minus">A−</button><button data-a="plus">A+</button>' +
-          '<button data-a="copy">कॉपी</button><button data-a="share">शेयर</button>' +
+          '<button data-a="copy">📋 Copy</button><button data-a="share">📲 WhatsApp</button>' +
         '</div>' +
         '<div class="text">' + html + '</div>' +
       '</div>';
@@ -52,13 +50,13 @@
     };
   });
 
-  function flash(b){ const o=b.textContent; b.textContent='कॉपी हो गया'; setTimeout(()=>b.textContent=o,1200); }
+  function flash(b){ const o=b.textContent; b.textContent='✅ Copied'; setTimeout(()=>b.textContent=o,1200); }
   function setFs(v){ fs = Math.min(1.8, Math.max(.9, v)); document.documentElement.style.setProperty('--fs', fs + 'rem'); }
   function setOpen(i, open){
     const c = $('#card-' + TRACKS[i].id);
     c.classList.toggle('open', open);
     const tg = c.querySelector('.toggle');
-    tg.textContent = open ? 'Start ▴' : 'Start ▾';
+    tg.textContent = open ? 'बोल ▴' : 'बोल ▾';
     tg.setAttribute('aria-expanded', open);
   }
 
@@ -68,7 +66,7 @@
     cur = i; lastLn = -1;
     const t = TRACKS[i];
     audio.src = t.file;
-    audio.play().catch(e => console.warn('Audio play nahi hua:', t.file, e));
+    audio.play().catch(() => alert('Audio chalane me dikkat aayi. File ka naam check karein: ' + t.file));
     dock.hidden = false;
     $('#dTitle').textContent = t.title;
     TRACKS.forEach((_, k) => { setOpen(k, k === i); $('#card-' + TRACKS[k].id).classList.toggle('active', k === i); });
@@ -78,13 +76,12 @@
 
   function syncUI(){
     const playing = !audio.paused;
-    $('#pp').innerHTML = playing ? PAUSE : PLAY;
-    TRACKS.forEach((t, k) => $('#card-' + t.id + ' .play').innerHTML = (k === cur && playing) ? PAUSE : PLAY);
+    $('#pp').textContent = playing ? '⏸' : '▶';
+    TRACKS.forEach((t, k) => $('#card-' + t.id + ' .play').textContent = (k === cur && playing) ? '⏸' : '▶');
   }
   audio.onplay = audio.onpause = syncUI;
-  syncUI();
   audio.onended = () => step(1);
-  audio.onerror = () => { if (cur >= 0) console.warn('Audio file nahi mili:', TRACKS[cur].file); };
+  audio.onerror = () => { if (cur >= 0) alert('Audio file nahi mili: ' + TRACKS[cur].file); };
   audio.ontimeupdate = () => {
     $('#seek').value = audio.duration ? (audio.currentTime / audio.duration * 100) : 0;
     $('#dTime').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
@@ -101,15 +98,14 @@
     }
   };
   $('#pp').onclick = () => cur < 0 ? playTrack(0) : (audio.paused ? audio.play() : audio.pause());
-  $('#stop').onclick = () => { audio.pause(); audio.currentTime = 0; };
   $('#prev').onclick = () => step(-1);
   $('#next').onclick = () => step(1);
   $('#seek').oninput = e => { if (audio.duration) audio.currentTime = e.target.value / 100 * audio.duration; };
   $('#vol').oninput = e => audio.volume = e.target.value;
 
 
-  // ---------- राम नाम जप (auto-play + counter) ----------
-  const jap = new Audio('shree-ram-naam.mp3');
+  // ---------- राम नाम जप (auto + counter) ----------
+  const jap = new Audio('ram-naam-jap.mp3');
   jap.loop = true; jap.preload = 'auto';
   let count = 0;
   try { count = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0; } catch (e) {}
@@ -117,46 +113,37 @@
   const saveCount = () => { try { localStorage.setItem('hjv_count', count); } catch (e) {} };
   showCount();
 
-  const japSync = () => {
-    const on = !jap.paused && !jap.muted;
-    $('#japPP').innerHTML = (on ? PAUSE : PLAY) + '<span>' + (on ? 'Stop' : 'Start') + '</span>';
-    $('#japPP').setAttribute('aria-label', on ? 'Stop' : 'Start');
-  };
-  // sound ke saath chalao
-  const startJap = () => { jap.muted = false; return jap.play().catch(() => {}); };
+  const japSync = () => { $('#japPP').textContent = jap.paused ? '▶ चलाएँ' : '⏸ रोकें'; };
+  const startJap = () => jap.play().then(() => { $('#japHint').textContent = 'राम नाम गिनने के लिए नीचे टैप करें'; $('#japHint').classList.remove('warn'); })
+                                 .catch(() => {});
   jap.onplay = () => { if (cur >= 0 && !audio.paused) audio.pause(); japSync(); };
   jap.onpause = japSync;
-  jap.onvolumechange = japSync;
   audio.addEventListener('play', () => { if (!jap.paused) jap.pause(); });
 
-  // Page khulte hi audio chalta hai. Agar browser sound-autoplay rokta hai to
-  // pehle muted chalta hai aur screen par pehle touch/click/key par awaaz khul jaati hai.
-  let unlocked = false;
-  const evs = ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'];
-  const unlock = e => {
-    if (unlocked) return;
+  // Page khulte hi chalane ki koshish. Browser sound-autoplay rokta hai,
+  // to pehle tap/touch par jap shuru ho jayega.
+  let japStarted = false;
+  const firstTouch = e => {
+    if (japStarted) return;
     if (e.target.closest && e.target.closest('.card, .dock, #japPP')) { cleanup(); return; }  // bhajan chunna ho to jap mat chalao
-    startJap(); cleanup();
+    japStarted = true; cleanup(); startJap();
   };
-  const cleanup = () => { unlocked = true; evs.forEach(ev => document.removeEventListener(ev, unlock, true)); };
-  const armUnlock = () => evs.forEach(ev => document.addEventListener(ev, unlock, true));
-
-  const gate = $('#gate');
-  const hideGate = () => { gate.hidden = true; };
-  $('#gateBtn').addEventListener('click', () => { startJap().then(hideGate); hideGate(); cleanup(); });
-  jap.play().then(() => { unlocked = true; }).catch(() => {
-    armUnlock();
-    gate.hidden = false;                  // browser ne sound-autoplay roka: ek tap par shuru
-  });
-  jap.addEventListener('playing', () => { if (!jap.muted) hideGate(); });
+  const evs = ['pointerdown', 'touchend', 'click', 'keydown'];
+  const cleanup = () => evs.forEach(ev => document.removeEventListener(ev, firstTouch, true));
+  const splash = $('#splash');
+  const hideSplash = () => { splash.classList.add('out'); setTimeout(() => splash.hidden = true, 650); };
+  // 1) Seedha chalane ki koshish (jin browsers me allowed hai wahan page khulte hi bajega)
+  // 2) Blocked ho to "प्रवेश करें" screen: ek tap par jap shuru
+  jap.play().then(() => { japStarted = true; }).catch(() => { splash.hidden = false; });
+  $('#enter').onclick = () => { japStarted = true; cleanup(); startJap(); hideSplash(); };
 
   $('#tap').addEventListener('click', e => {
-    count++; showCount(); saveCount(); cleanup();
+    count++; showCount(); saveCount(); japStarted = true;
     if (navigator.vibrate) navigator.vibrate(count % 108 === 0 ? [60, 40, 60] : 12);
     const b = e.currentTarget; b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
-    if (jap.paused || jap.muted) startJap();       // tap par audio chalne lage
+    if (jap.paused) startJap();
   });
-  $('#japPP').onclick = () => { cleanup(); (jap.paused || jap.muted) ? startJap() : (jap.pause(), jap.currentTime = 0); };
+  $('#japPP').onclick = () => { japStarted = true; jap.paused ? startJap() : jap.pause(); };
   $('#japReset').onclick = () => { if (confirm('Counter 0 karein?')) { count = 0; showCount(); saveCount(); } };
   japSync();
 

@@ -4,97 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hanuman Ji Vibes | जय श्री राम – हनुमान चालीसा, बजरंग बाण, भजन</title>
-<meta name="description" content="Hanuman Ji Vibes – हनुमान चालीसा, बजरंग बाण, संकटमोचन हनुमान अष्टक और भजन, पूरे बोल के साथ। जय श्री राम, जय बजरंगबली।">
+<meta name="description" content="Hanuman Ji Vibes – हनुमान चालीसा, बजरंग बाण, संकटमोचन हनुमान अष्टक और भजन सुनें, साथ में पूरे बोल पढ़ें। जय श्री राम, जय बजरंगबली।">
 <meta name="theme-color" content="#2a0608">
-<meta property="og:title" content="Hanuman Ji Vibes | जय श्री राम">
-<meta property="og:description" content="जहाँ भक्ति है, वहाँ शक्ति है।">
+<meta property="og:title" content="Hanuman Ji Vibes 🚩 जय श्री राम">
+<meta property="og:description" content="जहाँ भक्ति है, वहाँ शक्ति है। भजन सुनें और बोल पढ़ें।">
 <meta property="og:image" content="bg.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="splash" id="splash" hidden role="dialog" aria-label="स्वागत">
+  <div class="splash-in">
+    <h1 class="jsr">🚩 जय श्री राम 🚩</h1>
+    <p class="sub">Hanuman Ji Vibes</p>
+    <p class="splash-msg">राम नाम जप के साथ दरबार में प्रवेश करें</p>
+    <button id="enter" class="cta">🪔 प्रवेश करें</button>
+  </div>
+</div>
+
 <div class="bg-blur" aria-hidden="true"></div>
 <div class="bg-main" aria-hidden="true"></div>
 <div class="bg-shade" aria-hidden="true"></div>
 <canvas id="embers" aria-hidden="true"></canvas>
 
 <header class="topbar">
-  <a class="logo" href="#home" aria-label="Hanuman Ji Vibes home">Hanuman Ji Vibes</a>
-  <nav class="topnav" aria-label="Sections">
-    <a href="#jap">राम नाम जप</a>
-    <a href="#audios">भजन</a>
-  </nav>
+  <a class="logo" href="#home" aria-label="Hanuman Ji Vibes home">🚩 <span>Hanuman Ji Vibes</span></a>
+  <a class="topbtn" href="#audios">🎧 सुनें</a>
 </header>
 
 <main>
   <section class="hero" id="home">
     <div class="hero-top">
-      <p class="om" aria-hidden="true">॥ श्री हनुमते नमः ॥</p>
-      <h1 class="jsr">जय श्री राम</h1>
-      <div class="orn" aria-hidden="true"><span></span><i>✦</i><span></span></div>
-      <p class="sub">Hanuman Ji Vibes</p>
+      <h1 class="jsr">🚩 जय श्री राम 🚩</h1>
+      <p class="sub">Welcome to Hanuman Ji Vibes</p>
     </div>
     <div class="hero-bottom">
       <p class="tag">जहाँ भक्ति है, वहाँ शक्ति है।</p>
       <p class="msg">जय बजरंगबली! हनुमान जी की भक्ति से साहस मिलता है, संकट कटते हैं और राम नाम का आशीर्वाद सदा साथ रहता है।</p>
-      <a class="cta" href="#jap">राम नाम जप</a>
-      <a class="scroll" href="#jap" aria-label="नीचे जाएँ">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-      </a>
+      <a class="cta" href="#audios">🪔 भजन सुनें और पढ़ें</a>
+      <a class="scroll" href="#audios" aria-label="नीचे जाएँ">⌄</a>
     </div>
   </section>
 
-  <section class="jap panel" id="jap">
-    <h2>राम नाम जप</h2>
-    <div class="orn small" aria-hidden="true"><span></span><i>✦</i><span></span></div>
-    <button id="tap" class="tap" aria-label="राम नाम गिनें">
+  <section class="jap" id="jap">
+    <h2>📿 राम नाम जप</h2>
+    <p class="hint" id="japHint">राम नाम गिनने के लिए नीचे टैप करें</p>
+    <button id="tap" class="tap" aria-label="राम नाम गिनें और जप सुनें">
       <span class="ring"></span>
       <span class="tap-n" id="cnt">0</span>
       <span class="tap-t">राम</span>
     </button>
     <p class="mala">माला पूरी: <strong id="mala">0</strong> <small>(१०८ = १ माला)</small></p>
     <div class="jap-ctl">
-      <button id="japPP" class="pill-btn" aria-label="Stop"></button>
-      <button id="japReset" class="icon-btn" aria-label="Reset">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
-      </button>
+      <button id="japPP">⏸ रोकें</button>
+      <button id="japReset">🔄 Reset</button>
     </div>
   </section>
 
-  <section class="audios panel" id="audios">
-    <h2>भजन और पाठ</h2>
-    <div class="orn small" aria-hidden="true"><span></span><i>✦</i><span></span></div>
+  <section class="audios" id="audios">
+    <h2>🎧 भजन और पाठ</h2>
+    <p class="hint">Play दबाइए, पूरे बोल नीचे खुल जाएँगे।</p>
     <div id="list" class="list"></div>
   </section>
 </main>
 
 <footer>
-  <p class="jsr2">जय श्री राम</p>
-  <p>Made with devotion for Shri Hanuman Ji</p>
+  <p>Made with ❤️ and Bhakti for Shri Hanuman Ji</p>
+  <p class="jsr2">🚩 जय श्री राम 🚩</p>
 </footer>
 
 <div class="dock" id="dock" hidden>
   <div class="dock-row">
-    <button id="prev" aria-label="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
-    <button id="pp" class="big" aria-label="Play or pause"></button>
-    <button id="stop" aria-label="Stop"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg></button>
-    <button id="next" aria-label="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+    <button id="prev" aria-label="Previous">⏮</button>
+    <button id="pp" class="big" aria-label="Play or pause">▶</button>
+    <button id="next" aria-label="Next">⏭</button>
     <div class="dock-info"><strong id="dTitle">–</strong><small id="dTime">0:00 / 0:00</small></div>
-    <label class="vol" aria-label="Volume">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
-      <input id="vol" type="range" min="0" max="1" step="0.05" value="1">
-    </label>
+    <label class="vol">🔊 <input id="vol" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume"></label>
   </div>
   <input id="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek">
-</div>
-
-<div id="gate" class="gate" hidden>
-  <button id="gateBtn" class="gate-btn" aria-label="जय श्री राम – शुरू करें">
-    <span class="gate-om">॥ जय श्री राम ॥</span>
-    <span class="gate-t">🔔 भजन शुरू करने के लिए छुएँ</span>
-  </button>
 </div>
 
 <script src="transcripts.js"></script>
