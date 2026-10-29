@@ -104,48 +104,91 @@
   $('#vol').oninput = e => audio.volume = e.target.value;
 
 
-  // ---------- राम नाम जप (auto + counter) ----------
-  const jap = new Audio('ram-naam-jap.mp3');
+  // ---------- राम नाम जप (audio + counter) ----------
+  const jap = new Audio('shree-ram-naam.mp3');
   jap.loop = true; jap.preload = 'auto';
-  let count = 0;
-  try { count = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0; } catch (e) {}
-  const showCount = () => { $('#cnt').textContent = count; $('#mala').textContent = Math.floor(count / 108); };
-  const saveCount = () => { try { localStorage.setItem('hjv_count', count); } catch (e) {} };
+  const D = n => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
+  const dayKey = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+  let total = 0, todayN = 0, soundOn = false;
+  try {
+    total = parseInt(localStorage.getItem('hjv_count') || '0', 10) || 0;
+    const sd = JSON.parse(localStorage.getItem('hjv_day') || 'null');
+    if (sd && sd.d === dayKey()) todayN = sd.n || 0;
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem('hjv_count', total); localStorage.setItem('hjv_day', JSON.stringify({d: dayKey(), n: todayN})); } catch (e) {} };
+  function showCount(){
+    const cur = total % 108;
+    $('#cnt').textContent = D(cur); $('#mcur').textContent = D(cur);
+    $('#mdone').textContent = D(Math.floor(total / 108));
+    $('#gNow').textContent = D(todayN); $('#sToday').textContent = D(todayN); $('#sTotal').textContent = D(total);
+    $('#goalBar').style.width = Math.min(100, todayN / 1008 * 100) + '%';
+  }
   showCount();
 
-  const japSync = () => { $('#japPP').textContent = jap.paused ? '▶ चलाएँ' : '⏸ रोकें'; };
-  const startJap = () => jap.play().then(() => { $('#japHint').textContent = 'राम नाम गिनने के लिए नीचे टैप करें'; $('#japHint').classList.remove('warn'); })
-                                 .catch(() => {});
+  let ac;
+  const tick = () => { if (!soundOn) return; try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.frequency.value = 660; o.connect(g); g.connect(ac.destination);
+    g.gain.setValueAtTime(.08, ac.currentTime); g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + .08);
+    o.start(); o.stop(ac.currentTime + .09); } catch (e) {} };
+
+  const japSync = () => { $('#jStat').textContent = jap.paused ? '⏸ राम नाम जप · रुका हुआ' : '🎵 राम नाम जप · बज रहा है'; };
+  const startJap = () => jap.play().catch(() => {});
   jap.onplay = () => { if (cur >= 0 && !audio.paused) audio.pause(); japSync(); };
   jap.onpause = japSync;
+  jap.onended = japSync;
   audio.addEventListener('play', () => { if (!jap.paused) jap.pause(); });
 
-  // Page khulte hi chalane ki koshish. Browser sound-autoplay rokta hai,
-  // to pehle tap/touch par jap shuru ho jayega.
-  let japStarted = false;
-  const firstTouch = e => {
-    if (japStarted) return;
-    if (e.target.closest && e.target.closest('.card, .dock, #japPP')) { cleanup(); return; }  // bhajan chunna ho to jap mat chalao
-    japStarted = true; cleanup(); startJap();
-  };
-  const evs = ['pointerdown', 'touchend', 'click', 'keydown'];
-  const cleanup = () => evs.forEach(ev => document.removeEventListener(ev, firstTouch, true));
   const splash = $('#splash');
   const hideSplash = () => { splash.classList.add('out'); setTimeout(() => splash.hidden = true, 650); };
-  // 1) Seedha chalane ki koshish (jin browsers me allowed hai wahan page khulte hi bajega)
-  // 2) Blocked ho to "प्रवेश करें" screen: ek tap par jap shuru
-  jap.play().then(() => { japStarted = true; }).catch(() => { splash.hidden = false; });
-  $('#enter').onclick = () => { japStarted = true; cleanup(); startJap(); hideSplash(); };
+  // 1) Seedha chalane ki koshish (jin browsers me allowed hai). 2) Blocked ho to "प्रवेश करें" screen.
+  jap.play().catch(() => { splash.hidden = false; });
+  $('#enter').onclick = () => { startJap(); hideSplash(); };
+
+  $('#hPlay').onclick = startJap;
+  $('#hPause').onclick = () => jap.pause();
+  $('#hStop').onclick = () => { jap.pause(); jap.currentTime = 0; };
+  $('#hLoop').onchange = e => { jap.loop = e.target.checked; };
 
   $('#tap').addEventListener('click', e => {
-    count++; showCount(); saveCount(); japStarted = true;
-    if (navigator.vibrate) navigator.vibrate(count % 108 === 0 ? [60, 40, 60] : 12);
+    total++; todayN++; showCount(); save(); tick();
+    if (navigator.vibrate) navigator.vibrate(total % 108 === 0 ? [60, 40, 60] : 12);
     const b = e.currentTarget; b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
-    if (jap.paused) startJap();
+    if (jap.paused && jap.currentTime === 0) startJap();
   });
-  $('#japPP').onclick = () => { japStarted = true; jap.paused ? startJap() : jap.pause(); };
-  $('#japReset').onclick = () => { if (confirm('Counter 0 karein?')) { count = 0; showCount(); saveCount(); } };
+  $('#snd').onclick = e => { soundOn = !soundOn; e.target.textContent = soundOn ? '🔔 क्लिक ध्वनि: चालू' : '🔕 क्लिक ध्वनि: बंद'; e.target.setAttribute('aria-pressed', soundOn); };
+  $('#japReset').onclick = () => { if (confirm('Counter 0 karein?')) { total = 0; todayN = 0; showCount(); save(); } };
   japSync();
+
+  // ---------- रोज़ का सुविचार ----------
+  (function(){
+    const n = new Date(), key = dayKey();
+    const days = Math.floor(Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()) / 86400000);
+    const text = (typeof OVERRIDES !== 'undefined' && OVERRIDES[key]) || SUVICHARS[days % SUVICHARS.length];
+    $('#vText').textContent = text;
+    $('#vDate').textContent = n.toLocaleDateString('hi-IN', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    const msg = '🚩 आज का सुविचार 🚩\n\n' + text + '\n\n॥ जय श्री राम ॥\n' + location.href.split('#')[0];
+    $('#vShare').onclick = () => navigator.share ? navigator.share({text: msg}).catch(() => {}) : window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    $('#vCopy').onclick = e => navigator.clipboard && navigator.clipboard.writeText(msg).then(() => flash(e.target));
+  })();
+
+  // ---------- हनुमान मंत्र ----------
+  (function(){
+    const box = $('#mlist');
+    if (!MANTRAS.length) { box.innerHTML = '<div class="note">हनुमान जी के मंत्र जल्द जोड़े जाएँगे। 🙏</div>'; return; }
+    MANTRAS.forEach(m => {
+      const c = document.createElement('div'); c.className = 'mcard';
+      c.innerHTML = '<h3>' + esc(m.title) + '</h3><p>' + esc(m.text) + '</p><button>📋 Copy</button>';
+      c.querySelector('button').onclick = e => navigator.clipboard && navigator.clipboard.writeText(m.title + '\n' + m.text).then(() => flash(e.target));
+      box.appendChild(c);
+    });
+  })();
+
+  // ---------- ऊपर जाने का बटन ----------
+  const topBtn = $('#top');
+  addEventListener('scroll', () => { topBtn.hidden = scrollY < 600; }, {passive: true});
+  topBtn.onclick = () => scrollTo({top: 0, behavior: 'smooth'});
 
   // ---------- golden embers ----------
   const cv = $('#embers'), cx = cv.getContext('2d');

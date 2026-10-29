@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hanuman Ji Vibes | जय श्री राम – हनुमान चालीसा, बजरंग बाण, भजन</title>
-<meta name="description" content="Hanuman Ji Vibes – हनुमान चालीसा, बजरंग बाण, संकटमोचन हनुमान अष्टक और भजन सुनें, साथ में पूरे बोल पढ़ें। जय श्री राम, जय बजरंगबली।">
+<title>Hanuman Ji Vibes | जय श्री राम – राम नाम जप, सुविचार, हनुमान चालीसा, भजन</title>
+<meta name="description" content="Hanuman Ji Vibes – राम नाम जप, रोज़ का सुविचार, हनुमान चालीसा, बजरंग बाण, संकटमोचन हनुमान अष्टक और भजन सुनें, साथ में पूरे बोल पढ़ें। जय श्री राम, जय बजरंगबली।">
 <meta name="theme-color" content="#2a0608">
 <meta property="og:title" content="Hanuman Ji Vibes 🚩 जय श्री राम">
-<meta property="og:description" content="जहाँ भक्ति है, वहाँ शक्ति है। भजन सुनें और बोल पढ़ें।">
+<meta property="og:description" content="जहाँ भक्ति है, वहाँ शक्ति है। नाम जप, सुविचार और भजन।">
 <meta property="og:image" content="bg.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,14 @@
 
 <header class="topbar">
   <a class="logo" href="#home" aria-label="Hanuman Ji Vibes home">🚩 <span>Hanuman Ji Vibes</span></a>
-  <a class="topbtn" href="#audios">🎧 सुनें</a>
+  <nav aria-label="मुख्य मेनू">
+    <a href="#home">मुख्य</a>
+    <a href="#jaap">नाम जप</a>
+    <a href="#vichar">सुविचार</a>
+    <a href="#audios">भजन</a>
+    <a href="#mantra">मंत्र</a>
+    <a href="#about">परिचय</a>
+  </nav>
 </header>
 
 <main>
@@ -43,30 +50,65 @@
     <div class="hero-bottom">
       <p class="tag">जहाँ भक्ति है, वहाँ शक्ति है।</p>
       <p class="msg">जय बजरंगबली! हनुमान जी की भक्ति से साहस मिलता है, संकट कटते हैं और राम नाम का आशीर्वाद सदा साथ रहता है।</p>
-      <a class="cta" href="#audios">🪔 भजन सुनें और पढ़ें</a>
-      <a class="scroll" href="#audios" aria-label="नीचे जाएँ">⌄</a>
+      <p class="jstat" id="jStat">🎵 राम नाम जप</p>
+      <div class="hctl">
+        <button id="hPlay">▶ Play</button>
+        <button id="hPause">⏸ Pause</button>
+        <button id="hStop">⏹ Stop</button>
+        <label class="loop"><input type="checkbox" id="hLoop" checked> 🔁 दोहराएँ</label>
+      </div>
+      <a class="cta" href="#jaap">📿 नाम जप करें</a>
+      <a class="scroll" href="#jaap" aria-label="नीचे जाएँ">⌄</a>
     </div>
   </section>
 
-  <section class="jap" id="jap">
+  <section class="jap sec" id="jaap">
     <h2>📿 राम नाम जप</h2>
-    <p class="hint" id="japHint">राम नाम गिनने के लिए नीचे टैप करें</p>
-    <button id="tap" class="tap" aria-label="राम नाम गिनें और जप सुनें">
+    <p class="hint">गोल बटन पर टैप करके राम नाम गिनें</p>
+    <button id="tap" class="tap" aria-label="राम नाम गिनें">
       <span class="ring"></span>
-      <span class="tap-n" id="cnt">0</span>
-      <span class="tap-t">राम</span>
+      <span class="tap-n" id="cnt">०</span>
+      <span class="tap-t">॥ राम ॥</span>
     </button>
-    <p class="mala">माला पूरी: <strong id="mala">0</strong> <small>(१०८ = १ माला)</small></p>
+    <p class="mala">माला: <strong id="mcur">०</strong>/१०८ &nbsp;·&nbsp; पूरी माला: <strong id="mdone">०</strong></p>
+    <div class="goal"><div class="goal-bar" id="goalBar"></div></div>
+    <p class="goal-t">लक्ष्य १००८ &nbsp;·&nbsp; आज <strong id="gNow">०</strong>/१००८</p>
+    <div class="stats">
+      <div><small>आज</small><strong id="sToday">०</strong></div>
+      <div><small>कुल</small><strong id="sTotal">०</strong></div>
+    </div>
     <div class="jap-ctl">
-      <button id="japPP">⏸ रोकें</button>
+      <button id="snd" aria-pressed="false">🔕 क्लिक ध्वनि: बंद</button>
       <button id="japReset">🔄 Reset</button>
     </div>
   </section>
 
-  <section class="audios" id="audios">
+  <section class="sec" id="vichar">
+    <h2>🌅 आज का दिव्य सुविचार</h2>
+    <p class="hint" id="vDate">Today’s Thought</p>
+    <blockquote class="vcard"><span class="qm">“</span><p id="vText">…</p></blockquote>
+    <div class="jap-ctl">
+      <button id="vShare">📲 Share</button>
+      <button id="vCopy">📋 Copy</button>
+    </div>
+  </section>
+
+  <section class="audios sec" id="audios">
     <h2>🎧 भजन और पाठ</h2>
     <p class="hint">Play दबाइए, पूरे बोल नीचे खुल जाएँगे।</p>
     <div id="list" class="list"></div>
+  </section>
+
+  <section class="sec" id="mantra">
+    <h2>🔱 हनुमान जी के मंत्र</h2>
+    <p class="hint">श्री हनुमान जी के पावन मंत्र</p>
+    <div id="mlist" class="list"></div>
+  </section>
+
+  <section class="sec about" id="about">
+    <h2>परिचय</h2>
+    <p>यह वेबसाइट श्री हनुमान जी और प्रभु श्री राम के प्रति श्रद्धा से बनाई गई है, ताकि नाम जप, सुविचार, भजन और पाठ एक शांत स्थान पर मिल सकें।</p>
+    <p class="jsr2">॥ जय श्री राम ॥ भक्ति, साहस और सेवा ही जीवन का सच्चा बल है।</p>
   </section>
 </main>
 
@@ -74,6 +116,8 @@
   <p>Made with ❤️ and Bhakti for Shri Hanuman Ji</p>
   <p class="jsr2">🚩 जय श्री राम 🚩</p>
 </footer>
+
+<button id="top" class="totop" aria-label="ऊपर जाएँ" hidden>↑</button>
 
 <div class="dock" id="dock" hidden>
   <div class="dock-row">
@@ -87,6 +131,8 @@
 </div>
 
 <script src="transcripts.js"></script>
+<script src="suvichars.js"></script>
+<script src="mantras.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
